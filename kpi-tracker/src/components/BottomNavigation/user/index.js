@@ -3,7 +3,7 @@ import tw, { styled } from "twin.macro";
 import { userBottomNavigationRoutes } from "../../../routes/user";
 
 const Container = styled.div`
-  ${tw`grid grid-cols-4 gap-2 w-full p-2`}
+  ${tw`grid grid-cols-4 gap-2 w-full p-2 bg-white`}
   height: 60px;
   border-top: 1px solid #e6e6e6;
   position: fixed;
