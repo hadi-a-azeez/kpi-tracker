@@ -1,11 +1,12 @@
 import React from "react";
-import { UserBottomNavigation } from "../../components";
+import { BottomNavigation } from "../../components";
+import { userBottomNavigationRoutes } from "../../routes/user";
 
 const UserLayout = ({ children }) => {
   return (
     <div className="relative">
       {children}
-      <UserBottomNavigation />
+      <BottomNavigation routes={userBottomNavigationRoutes} />
     </div>
   );
 };

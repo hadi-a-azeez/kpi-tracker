@@ -5,6 +5,16 @@ import UserLayout from "../../../layouts/user";
 const ProfileSection = styled.div`
   ${tw`flex flex-row items-center gap-2 w-full`}
   margin-top: 30px;
+  // transform animation
+  animation: transform-animation 0.5s ease-in-out;
+  @keyframes transform-animation {
+    0% {
+      transform: translateY(-20px);
+    }
+    100% {
+      transform: translateY(0px);
+    }
+  }
 `;
 
 const ProfilePicture = styled.div`
@@ -18,11 +28,21 @@ const Card = styled.div`
   `}
   ${(props) => props.clockedIn && tw`bg-blue-500`}
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  //animation
+  animation: transform-animation 0.5s ease-in-out;
+  @keyframes transform-animation {
+    0% {
+      transform: translateY(-20px);
+    }
+    100% {
+      transform: translateY(0px);
+    }
+  }
 `;
 
 const CardText = styled.h1`
-  ${tw`text-lg font-bold text-gray-700`} ${(props) =>
-    props.clockedIn && tw`text-white`}
+  ${tw`text-lg font-bold text-gray-700`}
+  ${(props) => props.clockedIn && tw`text-white`}
 `;
 
 const CardDescription = styled.h1`
