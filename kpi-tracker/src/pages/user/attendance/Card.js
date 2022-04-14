@@ -22,11 +22,11 @@ const Card = () => {
         <span>MON</span>
       </DateCard>
       <Section>
-        <span>Punch In</span>
+        <span>Clock In</span>
         <span className="text-gray-500">10:15 AM</span>
       </Section>
       <Section>
-        <span>Punch Out</span>
+        <span>Clock Out</span>
         <span className="text-gray-500">07:15 AM</span>
       </Section>
     </Container>

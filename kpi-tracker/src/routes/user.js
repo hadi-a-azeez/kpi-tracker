@@ -6,21 +6,21 @@ export const userBottomNavigationRoutes = [
   {
     path: "/user/dashboard",
     label: "Dashboard",
-    icon: <BiHomeAlt />,
+    icon: BiHomeAlt,
   },
   {
     path: "/user/attendance",
     label: "Attendance",
-    icon: <FiCalendar />,
+    icon: FiCalendar,
   },
   {
     path: "/user/kpi",
     label: "Kpi tracker",
-    icon: <FiThumbsUp />,
+    icon: FiThumbsUp,
   },
   {
     path: "/user/profile",
     label: "Profile",
-    icon: <BiUserCircle />,
+    icon: BiUserCircle,
   },
 ];

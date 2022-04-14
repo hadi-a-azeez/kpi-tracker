@@ -1,3 +1,5 @@
-import UserBottomNavigation from "./BottomNavigation/user";
+import BottomNavigation from "./BottomNavigation";
+import InputField from "./Input";
+import Button from "./Button";
 
-export { UserBottomNavigation };
+export { BottomNavigation, InputField, Button };
