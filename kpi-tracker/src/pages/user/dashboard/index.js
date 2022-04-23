@@ -1,6 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import tw, { styled } from "twin.macro";
 import UserLayout from "../../../layouts/user";
+import {
+  getTodayAttendance,
+  markAttendance,
+  updateAttendane,
+} from "src/services/attendance";
+import dayjs from "dayjs";
+import AttendanceCard from "./AttendanceCard";
 
 const ProfileSection = styled.div`
   ${tw`flex flex-row items-center gap-2 w-full`}
@@ -23,44 +30,43 @@ const ProfilePicture = styled.div`
   width: 35px;
 `;
 
-const Card = styled.div`
-  ${tw`rounded-lg shadow-lg p-5 mt-4 grid place-items-center gap-2 
-  `}
-  ${(props) => props.clockedIn && tw`bg-blue-500`}
-  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-  //animation
-  animation: transform-animation 0.5s ease-in-out;
-  @keyframes transform-animation {
-    0% {
-      transform: translateY(-20px);
-    }
-    100% {
-      transform: translateY(0px);
-    }
-  }
-`;
-
-const CardText = styled.h1`
-  ${tw`text-lg font-bold text-gray-700`}
-  ${(props) => props.clockedIn && tw`text-white`}
-`;
-
-const CardDescription = styled.h1`
-  ${tw`text-sm font-bold text-gray-600`}
-  ${(props) => props.clockedIn && tw`text-white`}
-`;
-
-const Button = styled.button`
-  ${tw`bg-blue-500  text-white font-bold py-2 w-full rounded`}
-  ${(props) => props.clockedIn && tw`bg-white text-blue-500`}
-`;
-
 const Dashboard = () => {
   const [clockedIn, setClockedIn] = useState(false);
+  const [clockedInTime, setClockedInTime] = useState("");
 
-  const onButtonClick = () => {
+  const handleClockIn = async () => {
     setClockedIn(!clockedIn);
+    const response = await markAttendance({
+      date: dayjs("2022-04-22").format("YYYY-MM-DD"),
+      start_time: "09:00:00",
+      present: true,
+      user_id: 1,
+    });
   };
+
+  const handleClockOut = async () => {
+    const response = await updateAttendane({
+      end_time: "20:00",
+      user_id: 1,
+      date: dayjs("2022-04-22").format("YYYY-MM-DD"),
+    });
+    console.log(response);
+  };
+
+  useEffect(() => {
+    const getData = async () => {
+      const response = await getTodayAttendance({
+        user_id: 1,
+        date: "2022-04-23",
+      });
+      if (response.success && response.data.length) {
+        setClockedIn(true);
+        setClockedInTime(dayjs(response.data?.start_time).format("HH mm A"));
+      }
+    };
+    getData();
+  }, []);
+
   return (
     <UserLayout>
       <div className="w-full min-h-screen p-3">
@@ -75,17 +81,11 @@ const Dashboard = () => {
             </p>
           </div>
         </ProfileSection>
-        <Card clockedIn={clockedIn}>
-          <CardText clockedIn={clockedIn}>Let's get to work💼</CardText>
-          <Button onClick={() => onButtonClick()} clockedIn={clockedIn}>
-            {clockedIn ? "Clock Out" : "Clock In"}
-          </Button>
-          <CardDescription clockedIn={clockedIn}>
-            {clockedIn
-              ? "Clocked In at 9:56 AM"
-              : "Your hour's will be calculated here."}
-          </CardDescription>
-        </Card>
+        <AttendanceCard
+          clockedIn={clockedIn}
+          onButtonClick={clockedIn ? handleClockOut : handleClockIn}
+          clockedInTime={clockedInTime}
+        />
       </div>
     </UserLayout>
   );
