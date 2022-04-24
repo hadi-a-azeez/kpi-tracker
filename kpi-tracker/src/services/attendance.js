@@ -58,17 +58,29 @@ export const getAllAttendance = async (payload) => {
   let result = {
     status: false,
     data: {},
+    count: 0,
   };
   try {
-    const query = supabase
+    console.log("payload", payload);
+    let query = supabase
       .from("ab_attendance")
-      .select()
+      .select("*", { count: "exact" })
       .eq("user_id", payload?.user_id);
-    if (payload?.date) query = query.eq("date", payload?.date);
-    const { data = {}, error = {} } = await query;
+    if (payload?.startDate && payload?.endDate)
+      query = query
+        .gte("date", payload?.startDate)
+        .lte("date", payload?.endDate);
+    const {
+      data = {},
+      error = {},
+      count = 0,
+    } = await query.range(payload?.length, payload?.length + payload?.offset);
+    console.log("count", count);
     result.status = true;
-    if (data) result.data = data;
-  } catch {
+    result.data = data;
+    result.count = count;
+  } catch (e) {
+    console.log("e", e);
     result.success = false;
   } finally {
     return result;

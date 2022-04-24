@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+import { ATTENDANCE_STATUS } from "src/constants/attendanceStatus";
 import tw, { styled } from "twin.macro";
 
 const Card = styled.div`
@@ -32,21 +34,49 @@ const Button = styled.button`
   ${(props) => props.clockedIn && tw`bg-white text-blue-500`}
 `;
 
+const getButtonText = (status) => {
+  switch (status) {
+    case ATTENDANCE_STATUS.CLOCK_IN:
+      return "Clock In";
+    case ATTENDANCE_STATUS.CLOCK_OUT:
+      return "Clock Out";
+    default:
+      return "Congratulations🎉";
+  }
+};
+
+const getMessage = (status, clockedInTime) => {
+  switch (status) {
+    case ATTENDANCE_STATUS.CLOCK_IN:
+      return "Your hour's will be calculated here.";
+    case ATTENDANCE_STATUS.CLOCK_OUT:
+      return `Clocked In at ${clockedInTime}`;
+    default:
+      return "You finished your hour🎉";
+  }
+};
+
 const AttendanceCard = ({
-  clockedIn = false,
+  status,
   onButtonClick = () => {},
   clockedInTime = "",
 }) => {
+  const isClockedIn = useMemo(
+    () => status === ATTENDANCE_STATUS.CLOCK_OUT,
+    [status]
+  );
   return (
-    <Card clockedIn={clockedIn}>
-      <CardText clockedIn={clockedIn}>Let's get to work💼</CardText>
-      <Button onClick={() => onButtonClick()} clockedIn={clockedIn}>
-        {clockedIn ? "Clock Out" : "Clock In"}
+    <Card clockedIn={isClockedIn}>
+      <CardText clockedIn={isClockedIn}>Let's get to work💼</CardText>
+      <Button
+        onClick={() => onButtonClick()}
+        clockedIn={isClockedIn}
+        disabled={status === ATTENDANCE_STATUS.PRESENT}
+      >
+        {getButtonText(status)}
       </Button>
-      <CardDescription clockedIn={clockedIn}>
-        {clockedIn
-          ? `Clocked In at ${clockedInTime}`
-          : "Your hour's will be calculated here."}
+      <CardDescription clockedIn={isClockedIn}>
+        {getMessage(status, clockedInTime)}
       </CardDescription>
     </Card>
   );

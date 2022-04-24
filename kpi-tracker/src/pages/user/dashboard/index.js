@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import tw, { styled } from "twin.macro";
 import UserLayout from "../../../layouts/user";
 import {
   getTodayAttendance,
@@ -8,60 +7,47 @@ import {
 } from "src/services/attendance";
 import dayjs from "dayjs";
 import AttendanceCard from "./AttendanceCard";
-
-const ProfileSection = styled.div`
-  ${tw`flex flex-row items-center gap-2 w-full`}
-  margin-top: 30px;
-  // transform animation
-  animation: transform-animation 0.5s ease-in-out;
-  @keyframes transform-animation {
-    0% {
-      transform: translateY(-20px);
-    }
-    100% {
-      transform: translateY(0px);
-    }
-  }
-`;
-
-const ProfilePicture = styled.div`
-  ${tw`rounded-full bg-gray-200`}
-  height: 35px;
-  width: 35px;
-`;
+import { ATTENDANCE_STATUS } from "src/constants/attendanceStatus";
+import ProfileSection from "./ProfileSection";
 
 const Dashboard = () => {
-  const [clockedIn, setClockedIn] = useState(false);
+  const [attendanceStatus, setAttendanceStatus] = useState(
+    ATTENDANCE_STATUS.CLOCK_IN
+  );
   const [clockedInTime, setClockedInTime] = useState("");
 
   const handleClockIn = async () => {
-    setClockedIn(!clockedIn);
-    const response = await markAttendance({
-      date: dayjs("2022-04-22").format("YYYY-MM-DD"),
-      start_time: "09:00:00",
+    setAttendanceStatus(ATTENDANCE_STATUS.CLOCK_OUT);
+    await markAttendance({
+      date: dayjs().format("YYYY-MM-DD"),
+      start_time: dayjs().format("YYYY-MM-DD HH:mm:ss"),
       present: true,
       user_id: 1,
     });
   };
 
   const handleClockOut = async () => {
-    const response = await updateAttendane({
-      end_time: "20:00",
+    setAttendanceStatus(ATTENDANCE_STATUS.PRESENT);
+    await updateAttendane({
+      end_time: dayjs().format("YYYY-MM-DD HH:mm:ss"),
       user_id: 1,
-      date: dayjs("2022-04-22").format("YYYY-MM-DD"),
+      date: dayjs().format("YYYY-MM-DD"),
     });
-    console.log(response);
   };
 
   useEffect(() => {
     const getData = async () => {
       const response = await getTodayAttendance({
         user_id: 1,
-        date: "2022-04-23",
+        date: dayjs().format("YYYY-MM-DD"),
       });
       if (response.success && response.data.length) {
-        setClockedIn(true);
-        setClockedInTime(dayjs(response.data?.start_time).format("HH mm A"));
+        setClockedInTime(
+          dayjs("1/1/1" + response.data?.start_time).format("h:mm A")
+        );
+        response.data[0]?.end_time
+          ? setAttendanceStatus(ATTENDANCE_STATUS.PRESENT)
+          : setAttendanceStatus(ATTENDANCE_STATUS.CLOCK_OUT);
       }
     };
     getData();
@@ -70,20 +56,14 @@ const Dashboard = () => {
   return (
     <UserLayout>
       <div className="w-full min-h-screen p-3">
-        <ProfileSection>
-          <ProfilePicture></ProfilePicture>
-          <div className="flex flex-col">
-            <h1 className="text-normal font-bold text-gray-800">
-              Welcome, Muhamed
-            </h1>
-            <p className="text-sm text-gray-400 font-semibold ">
-              Digital Product Designer
-            </p>
-          </div>
-        </ProfileSection>
+        <ProfileSection />
         <AttendanceCard
-          clockedIn={clockedIn}
-          onButtonClick={clockedIn ? handleClockOut : handleClockIn}
+          status={attendanceStatus}
+          onButtonClick={
+            attendanceStatus === ATTENDANCE_STATUS.CLOCK_OUT
+              ? handleClockOut
+              : handleClockIn
+          }
           clockedInTime={clockedInTime}
         />
       </div>
