@@ -6,6 +6,7 @@ import Card from "./Card";
 import dayjs from "dayjs";
 import AnalyticsSection from "./AnalyticsSection";
 import DateRangeSection from "./DateRangeSection";
+import { Container } from "src/components";
 
 const AttendanceList = () => {
   const [data, setData] = useState([]);
@@ -75,7 +76,7 @@ const AttendanceList = () => {
 
   return (
     <UserLayout>
-      <div className="p-2 py-6">
+      <Container>
         <DateRangeSection
           onClick={onDateRangeChange}
           selectedDateRange={dateRange.label}
@@ -96,7 +97,7 @@ const AttendanceList = () => {
           totalCount={count}
           listCount={data?.length}
         />
-      </div>
+      </Container>
     </UserLayout>
   );
 };

@@ -4,7 +4,7 @@ import { userBottomNavigationRoutes } from "../../routes/user";
 
 const UserLayout = ({ children }) => {
   return (
-    <div className="relative">
+    <div className="relative flex-1">
       {children}
       <BottomNavigation routes={userBottomNavigationRoutes} />
     </div>
